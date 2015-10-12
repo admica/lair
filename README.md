@@ -3,6 +3,8 @@
 Temperature & Relative Humidity Monitoring from Android/iOS
 A work in progress...
 
+![lair logo](https://github.com/admica/lair/logo.png)
+
 ```
 [lair]
 _noun_
