@@ -1,4 +1,4 @@
-# lair
+# Lair
 
 Temperature & Relative Humidity Monitoring from Android/iOS
 A work in progress...
