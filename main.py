@@ -99,38 +99,30 @@ class RootWidget(BoxLayout):
     def q_watch(self, *args):
         try:
             data = self.q.get_nowait()
-            self.gui_update(data)
-        except:
-            pass
 
+            # format data
+            payload = "Node %s Temp: %s'C RH: %s%%" % (data['id'], data['temp'], data['rh'])
+            print payload
 
-    def gui_update(self, data):
-        # format data
-        node = data[0].strip()
-        temp = data[3].strip()
-        rh = data[4].strip()
-        payload = "Node %s Temp: %s'C RH: %s%%" % (data[0], data[3], data[4])
-        print payload
-
-        # modify gui elements
-        if data[0] == '1':
-            self.label1.text = payload
-        elif data[0] == '2':
-            self.label2.text = payload
-        elif data[0] == '3':
-            self.label3.text = payload
-        elif data[0] == '4':
-            self.label4.text = payload
-        elif data[0] == '5':
-            self.label5.text = payload
-        elif data[0] == '6':
-            self.label6.text = payload
-        elif data[0] == '7':
-            self.label7.text = payload
-        elif data[0] == '8':
-            self.label8.text = payload
-        else:
-            print "Invalid data", data
+            # modify gui elements
+            if data[0] == '1':
+                self.label1.text = payload
+            elif data[0] == '2':
+                self.label2.text = payload
+            elif data[0] == '3':
+                self.label3.text = payload
+            elif data[0] == '4':
+                self.label4.text = payload
+            elif data[0] == '5':
+                self.label5.text = payload
+            elif data[0] == '6':
+                self.label6.text = payload
+            elif data[0] == '7':
+                self.label7.text = payload
+            elif data[0] == '8':
+                self.label8.text = payload
+            else:
+                print "Invalid data", data
 
 
 class WebServer(SocketServer.ThreadingTCPServer):
@@ -184,7 +176,7 @@ class WebServer(SocketServer.ThreadingTCPServer):
         except:
             pass
         print "DATA", raw
-        """GET / {'Temp':23.5,'Humid':65.2} HTTP/1.1\r\nHost: x.x.x.x\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"""
+        """GET / {'id':1,'Temp':23.5,'Humid':65.2} HTTP/1.1\r\nHost: x.x.x.x\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"""
 
         # queue data
         self.q.put(data)

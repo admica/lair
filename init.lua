@@ -1,4 +1,5 @@
 -- networking
+_id = 1
 ssid = "SSID"
 passwd = "PASSWORD"
 port_listen = 8000
@@ -25,7 +26,7 @@ id_startup = 2
 function start_broadcast(interval)
     -- start a broadcast timer with given ms interval
     tmr.alarm(id_broadcast, interval, 1, function()
-        sk:send("GET / .. "{'Temp':" .. (tempC/10) .. "." .. (tempC%10) .. ",'Humid':" .. (humidRH/10) .. "." .. (humidRH%10) .. "}" .. HTTP/1.1\r\nHost: x.x.x.x\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n")
+        sk:send("GET / .. "{'id':" .. _id .. ",'temp':" .. (tempC/10) .. "." .. (tempC%10) .. ",'rh':" .. (humidRH/10) .. "." .. (humidRH%10) .. "}" .. HTTP/1.1\r\nHost: x.x.x.x\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n")
     end)
 end
 
