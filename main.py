@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-__version__ = "1.0"
+__version__ = "0.1"
 
 from kivy.lang import Builder
 from kivy.app import App
@@ -60,6 +60,26 @@ Builder.load_string("""
         text: "Waiting for Node 5 data..."
         color: .95, .95, .5, 1
 
+    Label:
+        id: label6
+        font_size: 36
+        text: "Waiting for Node 6 data..."
+        color: .95, .95, .5, 1
+
+    Label:
+        id: label7
+        font_size: 36
+        text: "Waiting for Node 7 data..."
+        color: .95, .95, .5, 1
+
+    Label:
+        id: label8
+        font_size: 36
+        text: "Waiting for Node 8 data..."
+        color: .95, .95, .5, 1
+
+
+
     Button:
         id: button_setup
         font_size: 20
@@ -86,7 +106,10 @@ class RootWidget(BoxLayout):
 
     def gui_update(self, data):
         # format data
-        payload = "Node %s Temp: %s'C RH: %s%% Up: %ss" % (data[0], data[3], data[4], data[5])
+        node = data[0].strip()
+        temp = data[3].strip()
+        rh = data[4].strip()
+        payload = "Node %s Temp: %s'C RH: %s%%" % (data[0], data[3], data[4])
         print payload
 
         # modify gui elements
@@ -101,13 +124,11 @@ class RootWidget(BoxLayout):
         elif data[0] == '5':
             self.label5.text = payload
         elif data[0] == '6':
-            self.label5.text = payload
+            self.label6.text = payload
         elif data[0] == '7':
-            self.label5.text = payload
+            self.label7.text = payload
         elif data[0] == '8':
-            self.label5.text = payload
-        elif data[0] == '9':
-            self.label5.text = payload
+            self.label8.text = payload
         else:
             print "Invalid data", data
 
@@ -153,9 +174,17 @@ class WebServer(SocketServer.ThreadingTCPServer):
         src, port = tup
         print src,port
         raw = socket.recv(4096)
-        raw = raw.split(' ')[1] # get payload element
-        data = raw[1:].split('/') # skip leading slash
-        print 'handler data:', data
+        try:
+            print "RAW", raw
+            raw = raw.split(' ')[1] # get payload element
+            print "RAW", raw
+            raw = raw.split('/') # skip leading slash
+            print "RAW", raw
+            raw = eval(raw[1][:-5])
+        except:
+            pass
+        print "DATA", raw
+        """GET / {'Temp':23.5,'Humid':65.2} HTTP/1.1\r\nHost: x.x.x.x\r\nConnection: keep-alive\r\nAccept: */*\r\n\r\n"""
 
         # queue data
         self.q.put(data)
