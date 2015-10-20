@@ -29,44 +29,36 @@ function start_broadcast(interval)
     end)
 end
 
-function do_humidity()
-    -- calculate humidity
-    i2c.start(i2c_id)
-    i2c.address(i2c_id, i2c_addr, i2c.RECEIVER)
-    local humidH, humidL = string.byte(i2c.read(i2c_id, 2),1,2)
-    i2c.stop(i2c_id)
-    local humid = bit.bor(bit.lshift(humidH, 8) , humidL)
-    humidRH = (humid*1000)/65536
-    -- get next temp
-    i2c.start(i2c_id)
-    i2c.address(i2c_id, i2c_addr, i2c.TRANSMITTER)
-    i2c.write(i2c_id, 0x00)
-    i2c.stop(i2c_id)
-end
-
-function do_temp()
-    -- calculate temperature            
-    i2c.start(i2c_id)
-    i2c.address(i2c_id, i2c_addr, i2c.RECEIVER)
-    local tempH, tempL = string.byte(i2c.read(i2c_id, 2),1,2)
-    i2c.stop(i2c_id)
-    local temp = bit.bor( bit.lshift(tempH, 8), tempL)
-    tempC = (((temp*165)-(40*65536))*10)/65536
-    -- get next humid
-    i2c.start(i2c_id)
-    i2c.address(i2c_id, i2c_addr, i2c.TRANSMITTER)
-    i2c.write(i2c_id, 0x01)   
-    i2c.stop(i2c_id)
-end
-
 -- start measurements
 tmr.alarm(sensor_id, 1000, 1, function() 
     if sensor_toggle == 0 then
         sensor_toggle = 1
-        do_humidity()
+        -- calculate humidity
+        i2c.start(i2c_id)
+        i2c.address(i2c_id, i2c_addr, i2c.RECEIVER)
+        local humidH, humidL = string.byte(i2c.read(i2c_id, 2),1,2)
+        i2c.stop(i2c_id)
+        local humid = bit.bor(bit.lshift(humidH, 8) , humidL)
+        humidRH = (humid*1000)/65536
+        -- get next temp
+        i2c.start(i2c_id)
+        i2c.address(i2c_id, i2c_addr, i2c.TRANSMITTER)
+        i2c.write(i2c_id, 0x00)
+        i2c.stop(i2c_id)
     else
         sensor_toggle = 0
-        do_temp()
+        -- calculate temperature            
+        i2c.start(i2c_id)
+        i2c.address(i2c_id, i2c_addr, i2c.RECEIVER)
+        local tempH, tempL = string.byte(i2c.read(i2c_id, 2),1,2)
+        i2c.stop(i2c_id)
+        local temp = bit.bor( bit.lshift(tempH, 8), tempL)
+        tempC = (((temp*165)-(40*65536))*10)/65536
+        -- get next humid
+        i2c.start(i2c_id)
+        i2c.address(i2c_id, i2c_addr, i2c.TRANSMITTER)
+        i2c.write(i2c_id, 0x01)   
+        i2c.stop(i2c_id)
     end
 end )
 
